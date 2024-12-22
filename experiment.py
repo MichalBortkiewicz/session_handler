@@ -1,14 +1,10 @@
+import itertools
 import os
 import subprocess
 import tempfile
-import itertools
 
 # Configuration
 config = {
-    "exclude_dirs": [
-        "old_contrastive", "params", "renders", "scripts", "notebooks", "experiments", "wandb",
-        "imgs", ".git", "__pycache__", "wykresy_crl", "plots", "clean_JaxGCRL"
-    ],
     "exp_name": "crl",
     "envs": ["arm_binpick_hard"],
     "hidden_layers": [2, 3, 4],
@@ -40,11 +36,17 @@ config = {
 # Create the main experiments directory if it doesn't exist
 os.makedirs("./experiments", exist_ok=True)
 
+# Define exclude directories separately
+exclude_dirs = [
+    "old_contrastive", "params", "renders", "scripts", "notebooks", "experiments", "wandb",
+    "imgs", ".git", "__pycache__", "wykresy_crl", "plots", "clean_JaxGCRL"
+]
+
 # Create a temporary directory with the experiment name within ./experiments
 temp_dir = tempfile.mkdtemp(prefix=f"{config['exp_name']}_", dir="./experiments")
 
 # Create the rsync exclude options
-exclude_opts = [f"--exclude={dir}" for dir in config["exclude_dirs"]]
+exclude_opts = [f"--exclude={dir}" for dir in exclude_dirs]
 
 # Copy all necessary files to the temporary directory, excluding specified directories
 rsync_command = ["rsync", "-av"] + exclude_opts + ["./", temp_dir]
