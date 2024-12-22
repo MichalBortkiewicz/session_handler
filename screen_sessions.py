@@ -47,10 +47,12 @@ def attach_screen_session(session_name):
         print(f"Error attaching to screen session: {e}")
 
 
-# Example Usage
-if __name__ == "__main__":
+def get_idle_gpus():
+    """
+    Detects idle GPUs using 'nvidia-smi' and returns a list of their IDs.
 
-    # Identify GPUs that are idle
+    :return: List of IDs of idle GPUs. If an error occurs, returns an empty list.
+    """
     try:
         gpu_status = (
             subprocess.check_output(["nvidia-smi", "--query-gpu=utilization.gpu", "--format=csv,nounits,noheader"])
@@ -64,7 +66,14 @@ if __name__ == "__main__":
         idle_gpus = []
         print("Error detecting GPU status or no idle GPUs available. Exiting.")
         exit(1)
+    return idle_gpus
 
+
+# Example Usage
+if __name__ == "__main__":
+
+    # Identify GPUs that are idle
+    idle_gpus = get_idle_gpus()
     print(idle_gpus)
     # Spawn a separate screen session for each idle GPU
     for gpu_id in idle_gpus:
