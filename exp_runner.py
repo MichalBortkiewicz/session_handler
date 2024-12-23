@@ -22,12 +22,17 @@ def split_experiment_combinations(combinations, n):
     return [list(islice(it, chunk_size)) for it in iterators]
 
 
+# Set maximum number of GPUs to use
+max_gpu_to_use = 2  # Adjust this value as needed
+
 # Detect idle GPUs
 idle_gpus = get_idle_gpus()  # Replace with the actual function or hard-coded list like [0, 1, 2]
+idle_gpus = idle_gpus[:min(max_gpu_to_use, len(idle_gpus))]
+# Limit the number of GPUs used
+num_idle_gpus = len(idle_gpus)
 
 # Split experiment_combinations across idle GPUs
 experiment_combinations_list = list(experiment_combinations)  # Convert to a list if it's an itertools.product
-num_idle_gpus = len(idle_gpus)
 
 if num_idle_gpus > 0:
     # Divide combinations among available GPUs
@@ -42,8 +47,9 @@ if num_idle_gpus > 0:
 
 else:
     print("No idle GPUs available.")
-    
 
+# TODO: perhaps create one long command from gpu_combinations such as :
+#  f"CUDA_VISIBLE_DEVICES={gpu}" + command1 && f"CUDA_VISIBLE_DEVICES={gpu}" + command2 && ...
 # Loop through each configuration and execute the command
 for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
     for combination in gpu_combinations:
@@ -52,8 +58,9 @@ for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
         # Format the command with the combination values
         command = base_command.format(**combination_dict)
 
+        command = f"CUDA_VISIBLE_DEVICES={gpu} " + command
         print(f"Running on GPU {gpu}: {command}")
-        create_screen_session(session_name = f"gpu_session_{gpu}", command=command)
+        create_screen_session(session_name=f"gpu_session_{gpu}", command=command)
 
         # List all screen sessions
         print("Active screen sessions:")
