@@ -99,7 +99,15 @@ for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
     # Combine all commands with "&&" and prepend CUDA_VISIBLE_DEVICES
     full_command = f"CUDA_VISIBLE_DEVICES={gpu} " + f" && CUDA_VISIBLE_DEVICES={gpu} ".join(commands)
     print(f"Running on GPU {gpu}: {full_command}")
-    create_screen_session(session_name=f"gpu_session_{gpu}", command=full_command)
+
+    session_name = f"gpu_session_{gpu}"
+
+    # Sanity check for existing sessions with the same name
+    active_sessions = list_screen_sessions()
+    if session_name in active_sessions:
+        raise Exception(f"Skipping creation: Session {session_name} already exists.")
+
+    create_screen_session(session_name=session_name, command=full_command)
 
     # List all screen sessions
     print("Active screen sessions:")
