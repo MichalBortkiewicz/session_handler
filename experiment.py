@@ -4,14 +4,15 @@ import os
 # Configuration
 config = {
     "exp_name": "crl",
-    "envs": ["arm_binpick_hard"],
-    "hidden_layers": [2, 3, 4],
-    "seeds": [7, 8, 9],
-    "batch_size": [256, 512],  # Example: Added to the grid search
-    "num_envs": [256, 1024],  # Example: Added to the grid search
-    "num_evals": 100,
     "project_name": "manipulation",
     "group_name": "first_run",
+    "envs": ["ant"],
+    "hidden_layers": [2, 3],
+    "h_dim": 256,
+    "seeds": 3,
+    "batch_size": [256],  # Example: Added to the grid search
+    "num_envs": [256],  # Example: Added to the grid search
+    "num_evals": 100,
     "num_timesteps": 100000000,
     "episode_length": 250,
     "unroll_length": 62,
@@ -20,7 +21,6 @@ config = {
     "max_replay_size": 10000,
     "discounting": 0.99,
     "action_repeat": 1,
-    "h_dim": 1024,
     "repr_dim": 64,
     "multiplier_num_sgd_steps": 4,
     "energy_fn": "l2",

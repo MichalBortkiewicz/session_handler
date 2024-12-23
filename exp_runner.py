@@ -1,7 +1,8 @@
 from itertools import islice
+
 import math
 
-from session_handler.experiment import experiment_combinations
+from session_handler.experiment import experiment_combinations, base_command, grid_keys
 from session_handler.screen_sessions import get_idle_gpus
 
 
@@ -37,6 +38,18 @@ if num_idle_gpus > 0:
     # Display assignments
     for i, gpu_combinations in enumerate(new_experiment_combinations):
         print(f"GPU {idle_gpus[i]} receives {len(gpu_combinations)} combinations.")
+        print(gpu_combinations)
 
 else:
     print("No idle GPUs available.")
+    
+
+# Loop through each configuration and execute the command
+for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
+    for combination in gpu_combinations:
+        # Create a dictionary mapping keys (from grid) to their respective values
+        combination_dict = dict(zip(grid_keys, combination))
+        # Format the command with the combination values
+        command = base_command.format(**combination_dict)
+        print(f"Running on GPU {gpu}: {command}")
+        # os.system(f"CUDA_VISIBLE_DEVICES={gpu} {command}")  # Executes the command on the specific GPU
