@@ -76,6 +76,10 @@ print(f"rsync_command: {rsync_command}")
 
 subprocess.run(rsync_command, check=True)
 
+# Set folder_path as the working directory
+os.chdir(folder_path)
+
+print(f"Working Directory: {os.getcwd()}")
 
 # Loop through each configuration and execute the command
 for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):

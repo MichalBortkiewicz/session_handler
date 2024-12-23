@@ -2,7 +2,7 @@ import itertools
 
 # Configuration
 config = {
-    "exp_name": "crl",
+    "exp_name": "crl_test_new",
     "project_name": "experiment_screen_runner",
     "group_name": "first_run",
     "env": ["ant"],
