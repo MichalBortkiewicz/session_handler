@@ -1,10 +1,16 @@
+import os
+import subprocess
+from datetime import datetime
 from itertools import islice
 
 import math
 
-from session_handler.experiment import experiment_combinations, base_command, grid_keys
+from session_handler.experiment import experiment_combinations, base_command, grid_keys, config
 from session_handler.screen_sessions import get_idle_gpus, create_screen_session, list_screen_sessions
 
+SRC_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+print(f"src_path: {SRC_PATH}")
 
 # Function to divide a large iterable into smaller parts
 def split_experiment_combinations(combinations, n):
@@ -47,6 +53,29 @@ if num_idle_gpus > 0:
 
 else:
     print("No idle GPUs available.")
+
+
+folder_name = f"{config['exp_name']}_{datetime.now().strftime('%Y-%m-%d_%H-%M')}"
+folder_path = os.path.join(SRC_PATH, "experiments", folder_name)
+os.makedirs(folder_path, exist_ok=True)
+
+print(f"folder_path: {folder_path}")
+
+# Define include directories and files
+include_dirs_files = [
+    "src/***",  # Match all files and subdirectories recursively in `src`
+    "envs/***", # Match all files and subdirectories recursively in `envs`
+    "training.py",
+    "utils.py"
+]
+include_opts = [f"--include={path}" for path in include_dirs_files] + ["--exclude=*", "--prune-empty-dirs"]
+
+# Copy only specified files and directories to the folder path
+rsync_command = ["rsync", "-av"] + include_opts + [f"{SRC_PATH}/", folder_path]  # Ensure trailing slash for SRC_PATH
+print(f"rsync_command: {rsync_command}")
+
+subprocess.run(rsync_command, check=True)
+
 
 # Loop through each configuration and execute the command
 for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):

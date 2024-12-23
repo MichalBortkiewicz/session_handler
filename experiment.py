@@ -1,5 +1,4 @@
 import itertools
-import os
 
 # Configuration
 config = {
@@ -13,7 +12,7 @@ config = {
     "batch_size": [256],  # Example: Added to the grid search
     "num_envs": [256],  # Example: Added to the grid search
     "num_evals": 10,
-    "num_timesteps": 10000000,
+    "num_timesteps": 5000000,
     "episode_length": 1000,
     "unroll_length": 62,
     "min_replay_size": 1000,
