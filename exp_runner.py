@@ -29,11 +29,15 @@ def split_experiment_combinations(combinations, n):
 
 
 # Set maximum number of GPUs to use
-max_gpu_to_use = 2  # Adjust this value as needed
+max_gpu_to_use = 3  # Adjust this value as needed
 
 # Detect idle GPUs
 idle_gpus = get_idle_gpus()  # Replace with the actual function or hard-coded list like [0, 1, 2]
 idle_gpus = idle_gpus[:min(max_gpu_to_use, len(idle_gpus))]
+
+# TODO: small fix for our server
+idle_gpus = [1 if gpu == 0 else 0 if gpu == 1 else gpu for gpu in idle_gpus]
+
 # Limit the number of GPUs used
 num_idle_gpus = len(idle_gpus)
 
