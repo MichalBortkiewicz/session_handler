@@ -56,7 +56,7 @@ if num_idle_gpus > 0:
         print(gpu_combinations)
 
 else:
-    print("No idle GPUs available.")
+    raise Exception("No idle GPUs available.")
 
 
 folder_name = f"{config['exp_name']}_{datetime.now().strftime('%Y-%m-%d_%H-%M')}"
@@ -90,11 +90,11 @@ for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
     # Create one long command from gpu_combinations
     commands = []
     for combination in gpu_combinations:
-        # Create a dictionary mapping keys (from grid) to their respective values
-        combination_dict = dict(zip(grid_keys, combination))
-        # Format the command with the combination values
-        command = base_command.format(**combination_dict)
+        dynamic_args = " ".join([f"--{key} {value}" for key, value in zip(grid_keys, combination)])
+        command = f"{base_command} {dynamic_args}"
+
         commands.append(command)
+        print(f"Command: {command}")
 
     # Combine all commands with "&&" and prepend CUDA_VISIBLE_DEVICES
     full_command = f"CUDA_VISIBLE_DEVICES={gpu} " + f" && CUDA_VISIBLE_DEVICES={gpu} ".join(commands)
@@ -103,4 +103,3 @@ for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
 
     # List all screen sessions
     print("Active screen sessions:")
-    list_screen_sessions()

@@ -37,20 +37,15 @@ grid_keys = [key for key, value in config.items() if isinstance(value, list)]
 grid_values = [config[key] for key in grid_keys]
 experiment_combinations = itertools.product(*grid_values)
 
-# Base command template
-base_command = (
-    "python training.py "
-    + " ".join(
-        [
-            f"--{key} {value}"
-            for key, value in config.items()
-            if not isinstance(value, list) and not isinstance(value, bool)  # Static arguments
-        ]
-    )
-    + " "
-    + " ".join([f"--{key}" for key, value in config.items() if isinstance(value, bool) and value])  # Booleans
-    + " "
-    + " ".join([f"--{key} {value}" for key, value_list in zip(grid_keys, grid_values) for value in value_list])  # Expand combinations
-)
+# Base command template (static arguments)
+base_command = "python training.py " + " ".join(
+    [
+        f"--{key} {value}"
+        for key, value in config.items()
+        if not isinstance(value, list) and not isinstance(value, bool)  # Static arguments
+    ]
+) + " " + " ".join(
+    [f"--{key}" for key, value in config.items() if isinstance(value, bool) and value]
+)  # Booleans
 
 
