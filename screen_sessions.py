@@ -1,7 +1,7 @@
 import subprocess
 
 
-def create_screen_session(session_name, command=None):
+def create_screen_session(session_name, command):
     """
     Creates a new screen session with the specified name and optionally runs a command.
 
@@ -10,17 +10,15 @@ def create_screen_session(session_name, command=None):
     """
     try:
         # Start a new detached screen session
-        if command:
-            subprocess.run(
-                ["screen", "-dmS", session_name, "bash", "-c", command],
-                check=True
-            )
-        else:
-            subprocess.run(
-                ["screen", "-dmS", session_name],
-                check=True
-            )
-        print(f"Screen session '{session_name}' created successfully.")
+        subprocess.run(
+            [
+                "screen", "-dmS", session_name,
+                "bash", "-c",
+                f"source ~/miniconda3/etc/profile.d/conda.sh && conda activate contrastive_rl && {command}"
+            ],
+            check=True
+        )
+
     except subprocess.CalledProcessError as e:
         print(f"Error creating screen session: {e}")
 

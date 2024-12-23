@@ -4,12 +4,12 @@ import os
 # Configuration
 config = {
     "exp_name": "crl",
-    "project_name": "manipulation",
+    "project_name": "experiment_screen_runner",
     "group_name": "first_run",
-    "envs": ["ant"],
-    "hidden_layers": [2, 3],
+    "env": ["ant"],
+    "n_hidden": [2, 3],
     "h_dim": 256,
-    "seeds": 3,
+    "seed": 3,
     "batch_size": [256],  # Example: Added to the grid search
     "num_envs": [256],  # Example: Added to the grid search
     "num_evals": 100,

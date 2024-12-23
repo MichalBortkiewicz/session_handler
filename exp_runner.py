@@ -3,7 +3,7 @@ from itertools import islice
 import math
 
 from session_handler.experiment import experiment_combinations, base_command, grid_keys
-from session_handler.screen_sessions import get_idle_gpus
+from session_handler.screen_sessions import get_idle_gpus, create_screen_session, list_screen_sessions
 
 
 # Function to divide a large iterable into smaller parts
@@ -51,5 +51,10 @@ for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
         combination_dict = dict(zip(grid_keys, combination))
         # Format the command with the combination values
         command = base_command.format(**combination_dict)
+
         print(f"Running on GPU {gpu}: {command}")
-        # os.system(f"CUDA_VISIBLE_DEVICES={gpu} {command}")  # Executes the command on the specific GPU
+        create_screen_session(session_name = f"gpu_session_{gpu}", command=command)
+
+        # List all screen sessions
+        print("Active screen sessions:")
+        list_screen_sessions()
