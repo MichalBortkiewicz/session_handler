@@ -9,12 +9,12 @@ config = {
     "env": ["ant"],
     "n_hidden": [2, 3],
     "h_dim": 256,
-    "seed": 3,
+    "seed": [2,3],
     "batch_size": [256],  # Example: Added to the grid search
     "num_envs": [256],  # Example: Added to the grid search
-    "num_evals": 100,
-    "num_timesteps": 100000000,
-    "episode_length": 250,
+    "num_evals": 10,
+    "num_timesteps": 10000000,
+    "episode_length": 1000,
     "unroll_length": 62,
     "min_replay_size": 1000,
     "contrastive_loss_fn": "symmetric_infonce",

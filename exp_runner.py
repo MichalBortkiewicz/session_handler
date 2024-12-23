@@ -48,20 +48,22 @@ if num_idle_gpus > 0:
 else:
     print("No idle GPUs available.")
 
-# TODO: perhaps create one long command from gpu_combinations such as :
-#  f"CUDA_VISIBLE_DEVICES={gpu}" + command1 && f"CUDA_VISIBLE_DEVICES={gpu}" + command2 && ...
 # Loop through each configuration and execute the command
 for gpu, gpu_combinations in zip(idle_gpus, new_experiment_combinations):
+    # Create one long command from gpu_combinations
+    commands = []
     for combination in gpu_combinations:
         # Create a dictionary mapping keys (from grid) to their respective values
         combination_dict = dict(zip(grid_keys, combination))
         # Format the command with the combination values
         command = base_command.format(**combination_dict)
+        commands.append(command)
 
-        command = f"CUDA_VISIBLE_DEVICES={gpu} " + command
-        print(f"Running on GPU {gpu}: {command}")
-        create_screen_session(session_name=f"gpu_session_{gpu}", command=command)
+    # Combine all commands with "&&" and prepend CUDA_VISIBLE_DEVICES
+    full_command = f"CUDA_VISIBLE_DEVICES={gpu} " + f" && CUDA_VISIBLE_DEVICES={gpu} ".join(commands)
+    print(f"Running on GPU {gpu}: {full_command}")
+    create_screen_session(session_name=f"gpu_session_{gpu}", command=full_command)
 
-        # List all screen sessions
-        print("Active screen sessions:")
-        list_screen_sessions()
+    # List all screen sessions
+    print("Active screen sessions:")
+    list_screen_sessions()
